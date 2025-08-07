@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $conn->prepare("INSERT INTO posts (type, title, content, image_url, video_url, event_date) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("ssssss", $type, $title, $content, $image_url, $video_url, $event_date);
                 if ($stmt->execute()) {
-                    header("Location: edit_post.php?id=" . $conn->insert_id . "&new=1");
+                    header("Location: " . BASE_URL . "/public/admin/edit_post.php?id=" . $conn->insert_id . "&new=1");
                     exit();
                 } else {
                     $error = 'Error creating post: ' . $conn->error;
@@ -135,7 +135,7 @@ $conn->close();
         <h1><?php echo htmlspecialchars($page_title); ?></h1>
         <div>
             <a href="manage_posts.php">Back to Posts</a> |
-            <a href="../../src/auth.php?action=logout">Logout</a>
+            <a href="<?php echo BASE_URL; ?>/src/auth.php?action=logout">Logout</a>
         </div>
     </div>
 
@@ -143,7 +143,7 @@ $conn->close();
         <?php if ($error): ?><div class="error"><?php echo $error; ?></div><?php endif; ?>
         <?php if ($success): ?><div class="success"><?php echo $success; ?></div><?php endif; ?>
 
-        <form action="edit_post.php<?php echo $post['id'] ? '?id='.$post['id'] : ''; ?>" method="post" enctype="multipart/form-data">
+        <form action="<?php echo BASE_URL; ?>/public/admin/edit_post.php<?php echo $post['id'] ? '?id='.$post['id'] : ''; ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo $post['id']; ?>">
             <input type="hidden" name="current_image" value="<?php echo htmlspecialchars($post['image_url']); ?>">
 
@@ -171,7 +171,7 @@ $conn->close();
                 <input type="file" id="image" name="image">
                 <?php if ($post['image_url']): ?>
                     <p>Current image:</p>
-                    <img src="../<?php echo htmlspecialchars($post['image_url']); ?>" alt="Current Image" class="current-image">
+                    <img src="<?php echo BASE_URL; ?>/public/<?php echo htmlspecialchars($post['image_url']); ?>" alt="Current Image" class="current-image">
                 <?php endif; ?>
             </div>
 

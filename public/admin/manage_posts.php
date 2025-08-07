@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 
@@ -50,14 +50,14 @@ $result = $stmt->get_result();
         <h1>Manage Posts</h1>
         <div>
             <a href="index.php">Dashboard</a> |
-            <a href="../../src/auth.php?action=logout">Logout</a>
+            <a href="<?php echo BASE_URL; ?>/src/auth.php?action=logout">Logout</a>
         </div>
     </div>
 
     <div class="container">
         <a href="edit_post.php" class="add-button">Add New Post</a>
 
-        <form class="filter-form" action="manage_posts.php" method="get">
+        <form class="filter-form" action="<?php echo BASE_URL; ?>/public/admin/manage_posts.php" method="get">
             <label for="type">Filter by type:</label>
             <select name="type" id="type" onchange="this.form.submit()">
                 <option value="">All Types</option>

@@ -29,14 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $username;
                     // Redirect to admin dashboard
-                    header("Location: ../public/admin/index.php");
+                    header("Location: " . BASE_URL . "/public/admin/");
                     exit();
                 }
             }
 
             // If we reach here, login was unsuccessful
             $_SESSION['login_error'] = 'Invalid username or password.';
-            header("Location: ../public/login.php");
+            header("Location: " . BASE_URL . "/public/login.php");
             exit();
 
             $stmt->close();
@@ -49,11 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_unset();
     session_destroy();
-    header("Location: ../public/login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 
 // Redirect to login if accessed directly without a valid action
-header("Location: ../public/login.php");
+header("Location: " . BASE_URL . "/public/login.php");
 exit();
 ?>

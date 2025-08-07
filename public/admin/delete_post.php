@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 
@@ -33,7 +33,7 @@ if (isset($_GET['id'])) {
 
     if ($stmt_delete->execute()) {
         // Redirect back to the manage posts list
-        header("Location: manage_posts.php");
+        header("Location: " . BASE_URL . "/public/admin/manage_posts.php");
         exit();
     } else {
         // Handle error
@@ -44,7 +44,7 @@ if (isset($_GET['id'])) {
     $conn->close();
 } else {
     // If no ID is provided, redirect
-    header("Location: manage_posts.php");
+    header("Location: " . BASE_URL . "/public/admin/manage_posts.php");
     exit();
 }
 ?>

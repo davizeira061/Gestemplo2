@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("sss", $title, $slug, $content);
             if ($stmt->execute()) {
                 // Redirect to edit page with the new ID
-                header("Location: edit_page.php?id=" . $conn->insert_id . "&new=1");
+                header("Location: " . BASE_URL . "/public/admin/edit_page.php?id=" . $conn->insert_id . "&new=1");
                 exit();
             } else {
                  if ($conn->errno == 1062) { // 1062 is the MySQL error code for duplicate entry
@@ -124,7 +124,7 @@ $conn->close();
         <h1><?php echo htmlspecialchars($page_title); ?></h1>
         <div>
             <a href="manage_pages.php">Back to Pages</a> |
-            <a href="../../src/auth.php?action=logout">Logout</a>
+            <a href="<?php echo BASE_URL; ?>/src/auth.php?action=logout">Logout</a>
         </div>
     </div>
 
@@ -132,7 +132,7 @@ $conn->close();
         <?php if ($error): ?><div class="error"><?php echo $error; ?></div><?php endif; ?>
         <?php if ($success): ?><div class="success"><?php echo $success; ?></div><?php endif; ?>
 
-        <form action="edit_page.php<?php echo $page['id'] ? '?id='.$page['id'] : ''; ?>" method="post">
+        <form action="<?php echo BASE_URL; ?>/public/admin/edit_page.php<?php echo $page['id'] ? '?id='.$page['id'] : ''; ?>" method="post">
             <input type="hidden" name="id" value="<?php echo $page['id']; ?>">
 
             <div class="form-group">

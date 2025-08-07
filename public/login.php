@@ -1,9 +1,10 @@
 <?php
 session_start();
+require_once '../config/database.php';
 
 // If the user is already logged in, redirect to the admin dashboard
 if (isset($_SESSION['user_id'])) {
-    header("Location: admin/index.php");
+    header("Location: " . BASE_URL . "/public/admin/");
     exit();
 }
 
@@ -37,7 +38,7 @@ if (isset($_SESSION['login_error'])) {
         <?php if ($error): ?>
             <p class="error"><?php echo htmlspecialchars($error); ?></p>
         <?php endif; ?>
-        <form action="../src/auth.php" method="post">
+        <form action="<?php echo BASE_URL; ?>/src/auth.php" method="post">
             <input type="hidden" name="action" value="login">
             <div class="form-group">
                 <label for="username">Username</label>

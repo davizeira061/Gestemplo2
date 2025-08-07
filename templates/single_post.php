@@ -44,7 +44,7 @@ if ($result && $result->num_rows > 0) {
         </div>
 
         <?php if ($post['image_url']): ?>
-            <img src="../<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="post-image">
+            <img src="<?php echo BASE_URL; ?>/public/<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>" class="post-image">
         <?php endif; ?>
 
         <div><?php echo nl2br(htmlspecialchars($post['content'])); ?></div>

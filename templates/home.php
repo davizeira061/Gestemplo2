@@ -29,9 +29,9 @@ $events_result = $conn->query("SELECT id, title, content, image_url, event_date 
         <?php if ($news_result && $news_result->num_rows > 0): ?>
             <?php while($post = $news_result->fetch_assoc()): ?>
                 <div class="post-card">
-                    <a href="news/<?php echo $post['id']; ?>">
+                    <a href="<?php echo BASE_URL; ?>/news/<?php echo $post['id']; ?>">
                         <?php if ($post['image_url']): ?>
-                            <img src="<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                            <img src="<?php echo BASE_URL; ?>/public/<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
                         <?php endif; ?>
                         <div class="post-card-content">
                             <h3><?php echo htmlspecialchars($post['title']); ?></h3>
@@ -52,9 +52,9 @@ $events_result = $conn->query("SELECT id, title, content, image_url, event_date 
         <?php if ($events_result && $events_result->num_rows > 0): ?>
             <?php while($post = $events_result->fetch_assoc()): ?>
                 <div class="post-card">
-                     <a href="events/<?php echo $post['id']; ?>">
+                     <a href="<?php echo BASE_URL; ?>/events/<?php echo $post['id']; ?>">
                         <?php if ($post['image_url']): ?>
-                            <img src="<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                            <img src="<?php echo BASE_URL; ?>/public/<?php echo htmlspecialchars($post['image_url']); ?>" alt="<?php echo htmlspecialchars($post['title']); ?>">
                         <?php endif; ?>
                         <div class="post-card-content">
                             <h3><?php echo htmlspecialchars($post['title']); ?></h3>

@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 
@@ -35,7 +35,7 @@ $result = $conn->query("SELECT id, slug, title, updated_at FROM pages ORDER BY t
         <h1>Manage Pages</h1>
         <div>
             <a href="index.php">Dashboard</a> |
-            <a href="../../src/auth.php?action=logout">Logout</a>
+            <a href="<?php echo BASE_URL; ?>/src/auth.php?action=logout">Logout</a>
         </div>
     </div>
 

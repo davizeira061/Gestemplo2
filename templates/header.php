@@ -1,4 +1,5 @@
 <?php
+require_once(dirname(__FILE__).'/../config/database.php'); // Ensures BASE_URL is defined
 require_once(dirname(__FILE__).'/../src/utils.php');
 $menu_pages = get_menu_pages();
 ?>
@@ -64,15 +65,15 @@ $menu_pages = get_menu_pages();
 
 <header class="main-header">
     <div class="container">
-        <a href="/pib-clone/" class="logo">Igreja Batista</a>
+        <a href="<?php echo BASE_URL; ?>/" class="logo">Igreja Batista</a>
         <nav class="main-nav">
             <ul>
-                <li><a href="/pib-clone/home">Home</a></li>
-                <li><a href="/pib-clone/news">Notícias</a></li>
-                <li><a href="/pib-clone/events">Eventos</a></li>
-                <li><a href="/pib-clone/sermons">Sermões</a></li>
+                <li><a href="<?php echo BASE_URL; ?>/home">Home</a></li>
+                <li><a href="<?php echo BASE_URL; ?>/news">Notícias</a></li>
+                <li><a href="<?php echo BASE_URL; ?>/events">Eventos</a></li>
+                <li><a href="<?php echo BASE_URL; ?>/sermons">Sermões</a></li>
                 <?php foreach($menu_pages as $page): ?>
-                    <li><a href="/pib-clone/page/<?php echo htmlspecialchars($page['slug']); ?>"><?php echo htmlspecialchars($page['title']); ?></a></li>
+                    <li><a href="<?php echo BASE_URL; ?>/page/<?php echo htmlspecialchars($page['slug']); ?>"><?php echo htmlspecialchars($page['title']); ?></a></li>
                 <?php endforeach; ?>
             </ul>
         </nav>

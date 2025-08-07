@@ -1,9 +1,10 @@
 <?php
 session_start();
+require_once '../../config/database.php';
 
 // If the user is not logged in, redirect to the login page
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
+    header("Location: " . BASE_URL . "/public/login.php");
     exit();
 }
 ?>
@@ -26,7 +27,7 @@ if (!isset($_SESSION['user_id'])) {
 <body>
     <div class="header">
         <h1>Admin Dashboard</h1>
-        <a href="../../src/auth.php?action=logout">Logout</a>
+        <a href="<?php echo BASE_URL; ?>/src/auth.php?action=logout">Logout</a>
     </div>
 
     <div class="container">
