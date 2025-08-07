@@ -1,0 +1,204 @@
+.maiuscula {
+    text-transform: uppercase;
+}
+.mensagem{
+    position: absolute;
+    width: 400px;
+    top: 100px;
+    left: 50%;
+    margin-left: -200px;
+
+    text-align: center;
+    color: #333333;
+    border: 1px solid #bbbbbb;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+    border-radius: 5px;
+}
+.mensagem h4{
+    color: #555555;
+}
+.fundo-transp{
+    opacity: 0.7;
+    color: #000000;
+    background-color: #000000;
+    width: 100%;
+    line-height: 1900px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+.altura-img{
+    height: 60px; !important;
+    margin-top: 15px;
+}
+.altura-img-lg{
+    height: 90px; !important;
+}
+.viwRelatorio{
+    padding-top: 50px;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.5);
+}
+.margin-pagina{
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.margin-pagina p{
+    font-size: 20px;
+}
+.margin-pagina i{
+    margin-left: 5px;
+    padding: 5px 15px;
+    background-color: #dddddd;
+    border: 1px solid #555555;
+}
+.margin-pagina em{
+    display: inline-block;
+    width: 100%;
+    padding: 5px 15px;
+    background-color: #dddddd;
+    border: 1px solid #555555;
+}
+
+.pdf-espaco-top{
+    padding-top: 120px;
+}
+.pdf-pagina h1{
+    position: absolute;
+    top: -20px;
+}
+.pdf-pagina h2{
+    position: absolute;
+    top: 5px;
+    left: 35%;
+    font-size: 16pt;
+}
+.pdf-pagina h3{
+    position: absolute;
+    top: -15px;
+    left: 75%;
+}
+.pdf-pagina p{
+    font-size: 10pt;
+}
+.pdf-pagina em{
+    display: inline-block;
+    width: 100%;
+    padding: 5px 15px;
+    background-color: #dddddd;
+    border: 1px solid #555555;
+}
+.sem-cor{
+    color: transparent;
+}
+.title-table{
+    background-color: #f5f5f5;
+    color: #888888
+}
+.tr-link:hover{
+    cursor: pointer;
+}
+.consolidar{
+    background-color: #2780e3;
+    color: #ffffff;
+    border-color: #2780e3;
+}
+.consolidar:hover{
+    background-color: #1967be;
+}
+.upload{
+    color: #555555;
+    padding: 10px;
+    border: 1px dashed #555555;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    margin: 20px 0px 7px 0px;
+    border-radius: 5px;
+}
+.upload:hover{
+    color: #333333;
+    background-color: #ececec;
+}
+.upload2{
+    color: #555555;
+    padding: 10px;
+    border: 1px dashed #555555;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+}
+.upload2:hover{
+    color: #333333;
+    background-color: #ececec;
+}
+.img-header{
+    margin-top: 5px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+#view-img{
+    margin: 20px auto;
+}
+.margin-top-50{
+    margin-top: 50px;
+}
+.background-ddd{
+    background-color: #dddddd;
+}
+.background-444{
+    background-color: #444444;
+}
+.background-fff{
+    background-color: #ffffff;
+}
+.box-shadow{
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.8);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.8);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.8);
+    border-radius: 10px;
+    border: none;
+}
+.panel-heading{
+    border-radius: 8px 8px 0px 0px;
+    border: none;
+}
+.title-detalhes{
+    margin-top: 0;
+}
+.detal{
+    cursor: pointer;
+}
+.creditos{
+    font-size: 10pt;
+}
+
+.subirTopo {
+    text-decoration: none;
+    background: rgba(140, 140, 140, 0.5);
+    width: 50px;
+    height: 50px;
+    bottom: 30px;
+    right: 30px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: fixed;
+    border: 0;
+    font-family: sans-serif;
+    opacity: .8;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.subirTopo:hover {
+    background: rgb(11, 91, 151);
+    color: #fff;
+}
