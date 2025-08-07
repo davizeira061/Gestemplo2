@@ -5637,8 +5637,8 @@ class cFormObj {
 ?>
 <?php
 include_once($EW_RELATIVE_PATH . "phpinc/ThumbLib.inc.php");
-define("EW_REDUCE_IMAGE_ONLY", TRUE, TRUE);
-define("EW_KEEP_ASPECT_RATIO", FALSE, TRUE);
+define("EW_REDUCE_IMAGE_ONLY", TRUE);
+define("EW_KEEP_ASPECT_RATIO", FALSE);
 
 // Resize binary to thumbnail
 function ew_ResizeBinary(&$filedata, &$width, &$height, $quality) {
