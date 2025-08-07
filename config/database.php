@@ -4,7 +4,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'church_cms');
+define('DB_NAME', 'igreja');
 
 // --- Base URL Configuration ---
 // Dynamically determine the base URL
