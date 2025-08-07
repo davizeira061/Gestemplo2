@@ -135,12 +135,12 @@ class GdThumb extends ThumbBase
 	 */
 	public function __destruct ()
 	{
-		if (is_resource($this->oldImage))
+		if (is_resource($this->oldImage) || (is_object($this->oldImage) && get_class($this->oldImage) == 'GdImage'))
 		{
 			imagedestroy($this->oldImage);
 		}
 		
-		if (is_resource($this->workingImage))
+		if (is_resource($this->workingImage) || (is_object($this->workingImage) && get_class($this->workingImage) == 'GdImage'))
 		{
 			imagedestroy($this->workingImage);
 		}
@@ -1589,7 +1589,9 @@ class GdThumb extends ThumbBase
 			);
 			
 			imagecolortransparent($this->workingImage, $colorTransparent);
-			imagetruecolortopalette($this->workingImage, true, 256);
+			if (function_exists('imagetruecolortopalette')) {
+				imagetruecolortopalette($this->workingImage, true, 256);
+			}
 		}
 	}
 }

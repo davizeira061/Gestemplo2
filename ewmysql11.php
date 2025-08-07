@@ -12,7 +12,7 @@ if (!defined('ADODB_FETCH_DEFAULT')) define('ADODB_FETCH_DEFAULT', 0);
 if (!defined('ADODB_FETCH_NUM')) define('ADODB_FETCH_NUM', 1);
 if (!defined('ADODB_FETCH_ASSOC')) define('ADODB_FETCH_ASSOC', 2);
 if (!defined('ADODB_FETCH_BOTH')) define('ADODB_FETCH_BOTH', 3);
-define('EW_USE_MYSQLI', TRUE && extension_loaded("mysqli"));
+define('EW_USE_MYSQLI', TRUE);
 
 /**
  * ADOConnection
@@ -269,23 +269,6 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 			{
 				$this->connectionId = false;
 			}
-		} else {
-			if (!function_exists('mysql_connect')) return false;
-			$this->host = $host;
-			if (!empty($this->port)) $this->host .= ":" . $this->port;
-			$this->username = $username;
-			$this->password = $password;
-			$this->database = $database;		
-			$this->persistent = $persistent;
-			$this->forcenewconnection = $forcenew;
-			if($this->persistent == 1)
-			{
-				$this->connectionId = @mysql_pconnect( $this->host, $this->username, $this->password, $this->clientFlags );
-			}
-			else
-			{
-				$this->connectionId = @mysql_connect( $this->host, $this->username, $this->password, $this->forcenewconnection, $this->clientFlags );
-			}
 		}
 		if ($this->connectionId === false)
 		{
@@ -322,28 +305,16 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 		}
 		else
 		{
-			if (EW_USE_MYSQLI) {
-				$result = @mysqli_select_db( $this->connectionId, $this->database );
-			} else {
-				$result = @mysql_select_db( $this->database, $this->connectionId );
-			}
+			$result = @mysqli_select_db( $this->connectionId, $this->database );
 			if($result === false)
 			{
 				if($this->createdatabase == true)
 				{
-					if (EW_USE_MYSQLI) {
-						$result = @mysqli_query( $this->connectionId, "CREATE DATABASE IF NOT EXISTS " . $this->database );
-					} else {
-						$result = @mysql_query( "CREATE DATABASE IF NOT EXISTS " . $this->database, $this->connectionId );
-					}
+					$result = @mysqli_query( $this->connectionId, "CREATE DATABASE IF NOT EXISTS " . $this->database );
 					if ($result === false) { // error handling if query fails
 						return false;
 					}
-					if (EW_USE_MYSQLI) {
-						$result = @mysqli_select_db( $this->connectionId, $this->database );
-					} else {
-						$result = @mysql_select_db( $this->database, $this->connectionId );
-					}
+					$result = @mysqli_select_db( $this->connectionId, $this->database );
 					if($result === false)
 					{
 						return false;
@@ -369,19 +340,11 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 	{
 		if ($this->connectionId === false)
 		{
-			if (EW_USE_MYSQLI) {
-				return @mysqli_connect_error();
-			} else {
-				return @mysql_error();
-			}
+			return @mysqli_connect_error();
 		}
 		else
 		{
-			if (EW_USE_MYSQLI) {
-				return @mysqli_error($this->connectionId);
-			} else {
-				return @mysql_error($this->connectionId);
-			}
+			return @mysqli_error($this->connectionId);
 		}
 	}
 
@@ -396,19 +359,11 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 	{
 		if ($this->connectionId === false)
 		{
-			if (EW_USE_MYSQLI) {
-				return @mysqli_connect_errno();
-			} else {
-				return @mysql_errno();
-			}
+			return @mysqli_connect_errno();
 		}
 		else
 		{
-			if (EW_USE_MYSQLI) {
-				return @mysqli_errno($this->connectionId);
-			} else {
-				return @mysql_errno($this->connectionId);
-			}
+			return @mysqli_errno($this->connectionId);
 		}
 	}
 
@@ -421,11 +376,7 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 
 	function Affected_Rows()
 	{
-		if (EW_USE_MYSQLI) {
-			return @mysqli_affected_rows($this->connectionId);
-		} else {
-			return @mysql_affected_rows($this->connectionId);
-		}
+		return @mysqli_affected_rows($this->connectionId);
 	} 
 
 	/**
@@ -437,11 +388,7 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 
 	function Insert_ID()
 	{
-		if (EW_USE_MYSQLI) {
-			return @mysqli_insert_id($this->connectionId);
-		} else {
-			return @mysql_insert_id($this->connectionId);
-		}
+		return @mysqli_insert_id($this->connectionId);
 	}
 
 	/**
@@ -457,12 +404,8 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 	function qstr($string, $magic_quotes=false)
 	{
 		if (!$magic_quotes) {
-			if (EW_USE_MYSQLI) {
-				if (function_exists('mysqli_real_escape_string')) {
-					return "'" . mysqli_real_escape_string($this->connectionId, $string) . "'";
-				}
-			} else {
-				return "'" . mysql_real_escape_string($string, $this->connectionId) . "'";
+			if (function_exists('mysqli_real_escape_string')) {
+				return "'" . mysqli_real_escape_string($this->connectionId, $string) . "'";
 			}
 			$string = str_replace("'", "\\'" , str_replace('\\', '\\\\', str_replace("\0", "\\\0", $string)));
 			return  "'" . $string . "'"; 
@@ -504,11 +447,7 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 
 	function Close()
 	{
-		if (EW_USE_MYSQLI) {
-			@mysqli_close( $this->connectionId );
-		} else {
-			@mysql_close( $this->connectionId );
-		}
+		@mysqli_close( $this->connectionId );
 		$this->connectionId = false;
 	}
 
@@ -716,11 +655,7 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 				$this->sql = $sql . $limit;
 				$time_start = array_sum(explode(' ', microtime()));
 				$this->query_count++;
-				if (EW_USE_MYSQLI) {
-					$resultId = @mysqli_query($this->connectionId,  $this->sql );
-				} else {
-					$resultId = @mysql_query( $this->sql, $this->connectionId );
-				}
+				$resultId = @mysqli_query($this->connectionId,  $this->sql );
 				$time_total = (array_sum(explode(' ', microtime())) - $time_start);
 				$this->query_time_total += $time_total;
 				if($this->debug_console)
@@ -740,11 +675,7 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 				$this->sql = $sql . $limit;
 				$time_start = array_sum(explode(' ', microtime()));
 				$this->query_count++;
-				if (EW_USE_MYSQLI) {
-					$resultId = @mysqli_query($this->connectionId,  $this->sql );
-				} else {
-					$resultId = @mysql_query( $this->sql, $this->connectionId );
-				}
+				$resultId = @mysqli_query($this->connectionId,  $this->sql );
 				$time_total = (array_sum(explode(' ', microtime())) - $time_start);
 				$this->query_time_total += $time_total;
 				if($this->debug_console)
@@ -770,39 +701,20 @@ class mysqlt_driver_ADOConnection extends ADOConnection
 		$resultset_name = 'mysqlt_driver_ResultSet';
 		$recordset = new $resultset_name( $resultId, $this->connectionId );
 		$recordset->_currentRow = 0;
-		if (EW_USE_MYSQLI) {
-			switch ($ADODB_FETCH_MODE)
-			{
-				case ADODB_FETCH_NUM: $recordset->fetchMode = MYSQLI_NUM; break;
-				case ADODB_FETCH_ASSOC:$recordset->fetchMode = MYSQLI_ASSOC; break;
-				default:
-				case ADODB_FETCH_DEFAULT:
-				case ADODB_FETCH_BOTH:$recordset->fetchMode = MYSQLI_BOTH; break;
-			}
-		} else {
-			switch ($ADODB_FETCH_MODE)
-			{
-				case ADODB_FETCH_NUM: $recordset->fetchMode = MYSQL_NUM; break;
-				case ADODB_FETCH_ASSOC:$recordset->fetchMode = MYSQL_ASSOC; break;
-				default:
-				case ADODB_FETCH_DEFAULT:
-				case ADODB_FETCH_BOTH:$recordset->fetchMode = MYSQL_BOTH; break;
-			}
+		switch ($ADODB_FETCH_MODE)
+		{
+			case ADODB_FETCH_NUM: $recordset->fetchMode = MYSQLI_NUM; break;
+			case ADODB_FETCH_ASSOC:$recordset->fetchMode = MYSQLI_ASSOC; break;
+			default:
+			case ADODB_FETCH_DEFAULT:
+			case ADODB_FETCH_BOTH:$recordset->fetchMode = MYSQLI_BOTH; break;
 		}
-		if (EW_USE_MYSQLI) {
-			$recordset->_numOfRows = @mysqli_num_rows( $resultId );
-		} else {
-			$recordset->_numOfRows = @mysql_num_rows( $resultId );
-		}
+		$recordset->_numOfRows = @mysqli_num_rows( $resultId );
 		if( $recordset->_numOfRows == 0)
 		{
 			$recordset->EOF = true;
 		}
-		if (EW_USE_MYSQLI) {
-			$recordset->_numOfFields = @mysqli_num_fields( $resultId );
-		} else {
-			$recordset->_numOfFields = @mysql_num_fields( $resultId );
-		}
+		$recordset->_numOfFields = @mysqli_num_fields( $resultId );
 		$recordset->_fetch();
 		return $recordset;
 	} 
@@ -844,11 +756,7 @@ class mysqlt_driver_ResultSet
 
 	function Close()
 	{
-		if (EW_USE_MYSQLI) {
-			@mysqli_free_result( $this->resultId );
-		} else {
-			@mysql_free_result( $this->resultId );
-		}
+		@mysqli_free_result( $this->resultId );
 		$this->fields = array();
 		$this->resultId = false;
 	} 
@@ -905,11 +813,7 @@ class mysqlt_driver_ResultSet
 
 	function MoveNext()
 	{
-		if (EW_USE_MYSQLI) {
-			$this->fields = @mysqli_fetch_array($this->resultId,$this->fetchMode);
-		} else {
-			$this->fields = @mysql_fetch_array($this->resultId, $this->fetchMode);
-		}
+		$this->fields = @mysqli_fetch_array($this->resultId,$this->fetchMode);
 		if ($this->fields) {
 			$this->_currentRow += 1;
 			return true;
@@ -983,11 +887,7 @@ class mysqlt_driver_ResultSet
 	function _seek($row)
 	{
 		if ($this->_numOfRows == 0) return false;
-		if (EW_USE_MYSQLI) {
-			return @mysqli_data_seek($this->resultId,$row);
-		} else {
-			return @mysql_data_seek($this->resultId,$row);
-		}
+		return @mysqli_data_seek($this->resultId,$row);
 	}
 
 	/**
@@ -998,14 +898,10 @@ class mysqlt_driver_ResultSet
 
 	function _fetch()
 {
-    if (EW_USE_MYSQLI) {
-        if ($this->resultId !== null) {
-            $this->fields = @mysqli_fetch_array($this->resultId, $this->fetchMode);
-        } else {
-            $this->fields = null;
-        }
+    if ($this->resultId !== null) {
+        $this->fields = @mysqli_fetch_array($this->resultId, $this->fetchMode);
     } else {
-        $this->fields = @mysql_fetch_array($this->resultId, $this->fetchMode);
+        $this->fields = null;
     }
     return is_array($this->fields);
 }
@@ -1068,21 +964,8 @@ class mysqlt_driver_ResultSet
 
 	function FetchField($fieldOffset = -1) 
 	{
-		if (EW_USE_MYSQLI) {
-
-			// $fieldOffset not supported by mysqli
-			$fieldObject = @mysqli_fetch_field($this->resultId);
-		} else {
-			if ($fieldOffset != -1) {
-				$fieldObject = @mysql_fetch_field($this->resultId, $fieldOffset);
-				$fieldObject->max_length = @mysql_field_len($this->resultId,$fieldOffset);
-			}
-			else
-			{
-				$fieldObject = @mysql_fetch_field($this->resultId);
-				$fieldObject->max_length = @mysql_field_len($this->resultId);
-			}
-		}
+		// $fieldOffset not supported by mysqli
+		$fieldObject = @mysqli_fetch_field($this->resultId);
 		return $fieldObject;
 	}
 }

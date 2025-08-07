@@ -56,20 +56,11 @@ function &CurrentMasterTable() {
 
 // Get current detail table object
 function &CurrentDetailTable() {
-    if (isset($GLOBALS["Grid"])) {
-        // Certifique-se de que o índice que você está tentando acessar existe
-        if (isset($GLOBALS["Grid"]["some_key"])) {
-            // Acesse o índice de forma segura
-            $value = $GLOBALS["Grid"]["some_key"];
-        } else {
-            // Trate o caso onde o índice não existe
-            $value = null; // ou algum valor padrão adequado
-        }
-    } else {
-        // Trate o caso onde $GLOBALS["Grid"] é nulo
-        $value = null; // ou algum valor padrão adequado
-    }
-    return $value;
+	if (isset($GLOBALS["Grid"])) {
+		return $GLOBALS["Grid"];
+	}
+	$null = null;
+	return $null;
 }
 
 // Get PHP errors
@@ -3244,7 +3235,7 @@ class cAdvancedSecurity {
 		$Sql = "SELECT COUNT(*) FROM " . EW_USER_LEVEL_PRIV_TABLE . " WHERE EXISTS(SELECT * FROM " .
 				EW_USER_LEVEL_PRIV_TABLE . " WHERE " . EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD . " NOT LIKE '{%')";
 		if (ew_ExecuteScalar($Sql) > 0) {
-			$ar = array_map(create_function('$t', 'return "\'" . ew_AdjustSql($t[0]) . "\'";'), $arTable);
+			$ar = array_map(function($t) { return "\'" . ew_AdjustSql($t[0]) . "\'"; }, $arTable);
 			$Sql = "UPDATE " . EW_USER_LEVEL_PRIV_TABLE . " SET " .
 				EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD . " = " . $conn->Concat("'" . ew_AdjustSql($ProjectID) . "'", EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD) . " WHERE " .
 				EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD . " IN (" . implode(",", $ar) . ")";
@@ -3258,7 +3249,7 @@ class cAdvancedSecurity {
 				EW_USER_LEVEL_PRIV_TABLE . " WHERE " . EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD . " LIKE '" .
 				ew_AdjustSql(EW_TABLE_PREFIX) . "%')";
 			if (ew_ExecuteScalar($Sql) > 0) {
-				$ar = array_map(create_function('$t', 'return "\'" . ew_AdjustSql(EW_TABLE_PREFIX . $t[0]) . "\'";'), $arTable);
+				$ar = array_map(function($t) { return "\'" . ew_AdjustSql(EW_TABLE_PREFIX . $t[0]) . "\'"; }, $arTable);
 				$Sql = "UPDATE " . EW_USER_LEVEL_PRIV_TABLE . " SET " .
 					EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD . " = REPLACE(" . EW_USER_LEVEL_PRIV_TABLE_NAME_FIELD . "," .
 					"'" . ew_AdjustSql(EW_TABLE_PREFIX) . "','" . ew_AdjustSql($EW_RELATED_PROJECT_ID) . "') WHERE " .
@@ -3791,12 +3782,10 @@ function ew_ContentType($data, $fn = "") {
 		$extension = strtolower(substr(strrchr($fn, "."), 1));
 		$ct = @$EW_MIME_TYPES[$extension];
 		if ($ct == "") {
-			if (file_exists($fn) && function_exists("finfo_file") && phpversion() >= "5.3.0") {
-				$finfo = finfo_open(FILEINFO_MIME_TYPE); // PHP >= 5.3.0
+			if (file_exists($fn) && function_exists("finfo_file")) {
+				$finfo = finfo_open(FILEINFO_MIME_TYPE);
 				$ct = finfo_file($finfo, $fn);
 				finfo_close($finfo);
-			} elseif (function_exists("mime_content_type")) {
-        		$ct = mime_content_type($fn);
 			}
 		}
 		return $ct;
@@ -5100,80 +5089,96 @@ function ew_ExtractScript(&$html, $class = "") {
 }
 
 // Include PHPMailer class
-include_once($EW_RELATIVE_PATH . "phpmailer527/class.phpmailer.php");
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
+require_once($EW_RELATIVE_PATH . "phpmailer/src/PHPMailer.php");
+require_once($EW_RELATIVE_PATH . "phpmailer/src/SMTP.php");
+require_once($EW_RELATIVE_PATH . "phpmailer/src/Exception.php");
 
 // Function to send email
 function ew_SendEmail($sFrEmail, $sToEmail, $sCcEmail, $sBccEmail, $sSubject, $sMail, $sFormat, $sCharset, $sSmtpSecure = "", $arAttachments = array(), $arImages = array(), $mail = NULL) {
 	global $Language, $gsEmailErrDesc;
 	$res = FALSE;
 	if (is_null($mail)) {
-		$mail = new PHPMailer();
-		$mail->IsSMTP(); 
+		$mail = new PHPMailer(true); // Passing `true` enables exceptions
+	}
+
+	try {
+		//Server settings
+		$mail->IsSMTP();
 		$mail->Host = EW_SMTP_SERVER;
 		$mail->SMTPAuth = (EW_SMTP_SERVER_USERNAME <> "" && EW_SMTP_SERVER_PASSWORD <> "");
 		$mail->Username = EW_SMTP_SERVER_USERNAME;
 		$mail->Password = EW_SMTP_SERVER_PASSWORD;
+		if ($sSmtpSecure <> "") $mail->SMTPSecure = $sSmtpSecure;
 		$mail->Port = EW_SMTP_SERVER_PORT;
-	}
-	if ($sSmtpSecure <> "") $mail->SMTPSecure = $sSmtpSecure;
-	if (preg_match('/^(.+)<([\w.%+-]+@[\w.-]+\.[A-Z]{2,6})>$/i', trim($sFrEmail), $m)) {
-		$mail->From = $m[2];
-		$mail->FromName = trim($m[1]);
-	} else {
-		$mail->From = $sFrEmail;
-		$mail->FromName = $sFrEmail;
-	}
-	$mail->Subject = $sSubject;
-	$mail->Body = $sMail;
-	if ($sCharset <> "" && strtolower($sCharset) <> "iso-8859-1")
-		$mail->CharSet = $sCharset;
-	$sToEmail = str_replace(";", ",", $sToEmail);
-	$arrTo = explode(",", $sToEmail);
-	foreach ($arrTo as $sTo) {
-		$mail->AddAddress(trim($sTo));
-	}
-	if ($sCcEmail <> "") {
-		$sCcEmail = str_replace(";", ",", $sCcEmail);
-		$arrCc = explode(",", $sCcEmail);
-		foreach ($arrCc as $sCc) {
-			$mail->AddCC(trim($sCc));
+
+		//Recipients
+		if (preg_match('/^(.+)<([\w.%+-]+@[\w.-]+\.[A-Z]{2,6})>$/i', trim($sFrEmail), $m)) {
+			$mail->setFrom($m[2], trim($m[1]));
+		} else {
+			$mail->setFrom($sFrEmail, $sFrEmail);
 		}
-	}
-	if ($sBccEmail <> "") {
-		$sBccEmail = str_replace(";", ",", $sBccEmail);
-		$arrBcc = explode(",", $sBccEmail);
-		foreach ($arrBcc as $sBcc) {
-			$mail->AddBCC(trim($sBcc));
+
+		$sToEmail = str_replace(";", ",", $sToEmail);
+		$arrTo = explode(",", $sToEmail);
+		foreach ($arrTo as $sTo) {
+			$mail->addAddress(trim($sTo));
 		}
-	}
-	if (strtolower($sFormat) == "html") {
-		$mail->ContentType = "text/html";
-	} else {
-		$mail->ContentType = "text/plain";
-	}
-	if (is_array($arAttachments)) {
-		foreach ($arAttachments as $attachment) {
-			$filename = @$attachment["filename"];
-			$content = @$attachment["content"];
-			if ($content <> "" && $filename <> "") {
-				$mail->AddStringAttachment($content, $filename);
-			} else if ($filename <> "") {
-				$mail->AddAttachment($filename);
+
+		if ($sCcEmail <> "") {
+			$sCcEmail = str_replace(";", ",", $sCcEmail);
+			$arrCc = explode(",", $sCcEmail);
+			foreach ($arrCc as $sCc) {
+				$mail->addCC(trim($sCc));
 			}
 		}
-	}
-	if (is_array($arImages)) {
-		foreach ($arImages as $tmpimage) {
-			$file = ew_UploadPathEx(TRUE, EW_UPLOAD_DEST_PATH) . $tmpimage;
-			$cid = ew_TmpImageLnk($tmpimage, "cid");
-			$mail->AddEmbeddedImage($file, $cid, $tmpimage);
-		}
-	}
-	$res = $mail->Send();
-	$gsEmailErrDesc = $mail->ErrorInfo;
 
-	// Uncomment to debug
-//		var_dump($mail); exit();
+		if ($sBccEmail <> "") {
+			$sBccEmail = str_replace(";", ",", $sBccEmail);
+			$arrBcc = explode(",", $sBccEmail);
+			foreach ($arrBcc as $sBcc) {
+				$mail->addBCC(trim($sBcc));
+			}
+		}
+
+		// Attachments
+		if (is_array($arAttachments)) {
+			foreach ($arAttachments as $attachment) {
+				$filename = @$attachment["filename"];
+				$content = @$attachment["content"];
+				if ($content <> "" && $filename <> "") {
+					$mail->addStringAttachment($content, $filename);
+				} else if ($filename <> "") {
+					$mail->addAttachment($filename);
+				}
+			}
+		}
+
+		// Embedded images
+		if (is_array($arImages)) {
+			foreach ($arImages as $tmpimage) {
+				$file = ew_UploadPathEx(TRUE, EW_UPLOAD_DEST_PATH) . $tmpimage;
+				$cid = ew_TmpImageLnk($tmpimage, "cid");
+				$mail->addEmbeddedImage($file, $cid, $tmpimage);
+			}
+		}
+
+		// Content
+		$mail->isHTML(strtolower($sFormat) == "html");
+		$mail->Subject = $sSubject;
+		$mail->Body = $sMail;
+
+		if ($sCharset <> "" && strtolower($sCharset) <> "iso-8859-1")
+			$mail->CharSet = $sCharset;
+
+		$res = $mail->send();
+	} catch (Exception $e) {
+		$gsEmailErrDesc = $mail->ErrorInfo;
+		$res = false;
+	}
 
 	return $res;
 }

@@ -112,12 +112,11 @@ function CreateServerFolder( $folderPath, $lastFolder = null )
 
 	if ( !file_exists( $folderPath ) )
 	{
-		// Turn off all error reporting.
-		error_reporting( 0 ) ;
-
-		$php_errormsg = '' ;
-		// Enable error tracking to catch the error.
-		ini_set( 'track_errors', '1' ) ;
+		$sErrorMsg = '';
+		set_error_handler(function($errno, $errstr) use (&$sErrorMsg) {
+			$sErrorMsg = $errstr;
+			return true; // Suppress the default error handler
+		});
 
 		if ( isset( $Config['ChmodOnFolderCreate'] ) && !$Config['ChmodOnFolderCreate'] )
 		{
@@ -136,11 +135,7 @@ function CreateServerFolder( $folderPath, $lastFolder = null )
 			umask( $oldumask ) ;
 		}
 
-		$sErrorMsg = $php_errormsg ;
-
-		// Restore the configurations.
-		ini_restore( 'track_errors' ) ;
-		ini_restore( 'error_reporting' ) ;
+		restore_error_handler();
 
 		return $sErrorMsg ;
 	}

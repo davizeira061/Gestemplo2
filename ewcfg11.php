@@ -412,20 +412,20 @@ $DEFAULT_TIME_ZONE = "America/Sao_Paulo";
  * Also read http://www.php.net/localeconv for description of the constants
 */
 $DEFAULT_LOCALE = json_decode('{"decimal_point":".","thousands_sep":"","int_curr_symbol":"$","currency_symbol":"$","mon_decimal_point":".","mon_thousands_sep":"","positive_sign":"","negative_sign":"-","int_frac_digits":2,"frac_digits":2,"p_cs_precedes":1,"p_sep_by_space":0,"n_cs_precedes":1,"n_sep_by_space":0,"p_sign_posn":1,"n_sign_posn":1}', true);
-$DEFAULT_DECIMAL_POINT = &$DEFAULT_LOCALE["decimal_point"];
-$DEFAULT_THOUSANDS_SEP = &$DEFAULT_LOCALE["thousands_sep"];
-$DEFAULT_CURRENCY_SYMBOL = &$DEFAULT_LOCALE["currency_symbol"];
-$DEFAULT_MON_DECIMAL_POINT = &$DEFAULT_LOCALE["mon_decimal_point"];
-$DEFAULT_MON_THOUSANDS_SEP = &$DEFAULT_LOCALE["mon_thousands_sep"];
-$DEFAULT_POSITIVE_SIGN = &$DEFAULT_LOCALE["positive_sign"];
-$DEFAULT_NEGATIVE_SIGN = &$DEFAULT_LOCALE["negative_sign"];
-$DEFAULT_FRAC_DIGITS = &$DEFAULT_LOCALE["frac_digits"];
-$DEFAULT_P_CS_PRECEDES = &$DEFAULT_LOCALE["p_cs_precedes"];
-$DEFAULT_P_SEP_BY_SPACE = &$DEFAULT_LOCALE["p_sep_by_space"];
-$DEFAULT_N_CS_PRECEDES = &$DEFAULT_LOCALE["n_cs_precedes"];
-$DEFAULT_N_SEP_BY_SPACE = &$DEFAULT_LOCALE["n_sep_by_space"];
-$DEFAULT_P_SIGN_POSN = &$DEFAULT_LOCALE["p_sign_posn"];
-$DEFAULT_N_SIGN_POSN = &$DEFAULT_LOCALE["n_sign_posn"];
+$DEFAULT_DECIMAL_POINT = $DEFAULT_LOCALE["decimal_point"];
+$DEFAULT_THOUSANDS_SEP = $DEFAULT_LOCALE["thousands_sep"];
+$DEFAULT_CURRENCY_SYMBOL = $DEFAULT_LOCALE["currency_symbol"];
+$DEFAULT_MON_DECIMAL_POINT = $DEFAULT_LOCALE["mon_decimal_point"];
+$DEFAULT_MON_THOUSANDS_SEP = $DEFAULT_LOCALE["mon_thousands_sep"];
+$DEFAULT_POSITIVE_SIGN = $DEFAULT_LOCALE["positive_sign"];
+$DEFAULT_NEGATIVE_SIGN = $DEFAULT_LOCALE["negative_sign"];
+$DEFAULT_FRAC_DIGITS = $DEFAULT_LOCALE["frac_digits"];
+$DEFAULT_P_CS_PRECEDES = $DEFAULT_LOCALE["p_cs_precedes"];
+$DEFAULT_P_SEP_BY_SPACE = $DEFAULT_LOCALE["p_sep_by_space"];
+$DEFAULT_N_CS_PRECEDES = $DEFAULT_LOCALE["n_cs_precedes"];
+$DEFAULT_N_SEP_BY_SPACE = $DEFAULT_LOCALE["n_sep_by_space"];
+$DEFAULT_P_SIGN_POSN = $DEFAULT_LOCALE["p_sign_posn"];
+$DEFAULT_N_SIGN_POSN = $DEFAULT_LOCALE["n_sign_posn"];
 define("EW_DEFAULT_LOCALE", '{"decimal_point":",","thousands_sep":".","int_curr_symbol":"$","currency_symbol":"$","mon_decimal_point":",","mon_thousands_sep":".","positive_sign":null,"negative_sign":"-","int_frac_digits":2,"frac_digits":2,"p_cs_precedes":true,"p_sep_by_space":false,"n_cs_precedes":true,"n_sep_by_space":false,"p_sign_posn":3,"n_sign_posn":3}');
 if (!json_decode(EW_DEFAULT_LOCALE)) // String, not JSON
 	@setlocale(LC_ALL, EW_DEFAULT_LOCALE);
